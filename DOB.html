@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthdate and Age Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .form-container {
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        input[type="number"] {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .error {
+            color: red;
+        }
+        .description {
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Welcome to the Birthdate and Age Calculator</h1>
+    
+    <p class="description">This application will calculate for you the exact date of birth and your age based on the details you provide. It was created by Dr. Abdiweli Adow Sheikh.</p>
+
+    <div class="form-container">
+        <h2>Enter Your Date of Birth</h2>
+        <form id="dobForm">
+            <input type="number" id="day" placeholder="Enter birth day (1-31)" required>
+            <input type="number" id="month" placeholder="Enter birth month (1-12)" required>
+            <input type="number" id="year" placeholder="Enter birth year" required>
+            <button type="button" onclick="calculateAgeAndDate()">Submit</button>
+        </form>
+    </div>
+
+    <div class="result" id="result"></div>
+
+    <script>
+        function calculateAgeAndDate() {
+            // Get input values
+            const day = document.getElementById('day').value;
+            const month = document.getElementById('month').value;
+            const year = document.getElementById('year').value;
+            const resultDiv = document.getElementById('result');
+
+            // Clear previous results
+            resultDiv.innerHTML = "";
+
+            // Check if any input is empty
+            if (!day || !month || !year) {
+                alert("Please fill in all the fields before submitting.");
+                return;
+            }
+
+            // Validate inputs
+            if (month < 1 || month > 12) {
+                resultDiv.innerHTML = "<p class='error'>Error: Month must be between 1 and 12.</p>";
+                return;
+            }
+            if (day < 1 || day > 31) { // Simple validation for day, can be improved for each month
+                resultDiv.innerHTML = "<p class='error'>Error: Please enter a valid day.</p>";
+                return;
+            }
+            if (year < 1300 || year > new Date().getFullYear()) {
+                resultDiv.innerHTML = "<p class='error'>Error: Please enter a valid year.</p>";
+                return;
+            }
+
+            // Create a date object for the birth date
+            const birthDate = new Date(year, month - 1, day);  // Month is 0-indexed in JS
+
+            // Calculate the age
+            const today = new Date();
+            let age = today.getFullYear() - year;
+            if (today.getMonth() + 1 < month || (today.getMonth() + 1 === month && today.getDate() < day)) {
+                age--;  // Subtract one year if the current date hasn't reached the birthday yet this year
+            }
+
+            // Format the exact birthdate as a readable string
+            const birthDateString = birthDate.toLocaleDateString("en-US", {
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric'
+            });
+
+            // Display the results
+            resultDiv.innerHTML = `
+                <p>Your exact birthdate is: ${birthDateString}</p>
+                <p>Your age is: ${age} years</p>
+            `;
+        }
+    </script>
+
+</body>
+</html>
